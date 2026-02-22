@@ -1,0 +1,34 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Supprimer Document{% endblock %}
+{% block page_title %}Supprimer Document{% endblock %}
+
+{% block content %}
+
+<div style="max-width:500px;margin: 40px auto;">
+    <div class="card">
+        <div class="card-header" style="background:#fee2e2;color:#991b1b;">
+            <h2 style="display:flex;align-items:center;gap:8px;">
+                <i data-lucide="file-minus" style="width:20px;height:20px;"></i>
+                Supprimer document
+            </h2>
+        </div>
+        <div class="card-body" style="text-align:center;padding:32px;">
+            <p style="font-size:16px;margin-bottom:24px;">
+                Voulez-vous vraiment supprimer le document <strong>{{ document.get_type_document_display }}</strong> du véhicule <strong>{{ document.vehicule.immatriculation }}</strong> ?
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div style="display:flex;gap:12px;justify-content:center;">
+                    <a href="{% url 'document_list' document.vehicule.id %}" class="btn btn-outline">Annuler</a>
+                    <button type="submit" class="btn btn-danger">
+                        Supprimer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Mon Dashboard{% endblock %}
+{% block page_title %}Mon Espace Chauffeur{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+
+<div class="grid-2" style="grid-template-columns: 1fr 1fr; gap: 24px;">
+    
+    <!-- License Status -->
+    <div class="card">
+        <div class="card-header">
+            <h3 style="display:flex;align-items:center;gap:8px;">
+                <i data-lucide="id-card" style="width:18px;height:18px;color:var(--primary);"></i>
+                Mon Permis de Conduire
+            </h3>
+        </div>
+        <div class="card-body">
+            {% if chauffeur %}
+                <div style="padding: 16px; border-radius: 8px; background: {% if chauffeur.date_expiration_permis < today %}#fee2e2{% else %}#f0fdf4{% endif %};">
+                    <div style="font-size: 14px; color: var(--text-muted);">Numéro de permis</div>
+                    <div style="font-size: 20px; font-weight: 700; margin-bottom: 12px;">{{ chauffeur.numero_permis }}</div>
+                    
+                    <div style="font-size: 14px; color: var(--text-muted);">Date d'expiration</div>
+                    <div style="font-size: 18px; font-weight: 600; color: {% if chauffeur.date_expiration_permis < today %}var(--danger){% else %}var(--success){% endif %};">
+                        {{ chauffeur.date_expiration_permis }}
+                        {% if chauffeur.date_expiration_permis < today %}
+                            <span class="badge badge-danger">EXPIRÉ</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">Profil chauffeur non trouvé.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Assigned Vehicles -->
+    <div class="card">
+        <div class="card-header">
+            <h3 style="display:flex;align-items:center;gap:8px;">
+                <i data-lucide="car" style="width:18px;height:18px;color:var(--primary);"></i>
+                Mon Véhicule Assigné
+            </h3>
+        </div>
+        <div class="card-body">
+            {% for v in mes_vehicules %}
+                <div class="activity-item" style="padding: 12px 0;">
+                    <div class="activity-dot"></div>
+                    <div>
+                        <div style="font-weight:600; font-size: 16px;">{{ v.marque }} {{ v.modele }}</div>
+                        <div style="font-size: 14px; color: var(--text-muted);">{{ v.immatriculation }}</div>
+                    </div>
+                    <div style="margin-left: auto;">
+                        <span class="badge {% if v.statut == 'DISPONIBLE' %}badge-success{% elif v.statut == 'MAINTENANCE' %}badge-warning{% else %}badge-info{% endif %}">
+                            {{ v.get_statut_display }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 16px; font-size: 14px;">
+                    <a href="{% url 'document_list' v.id %}" class="btn btn-ghost btn-sm">
+                        <i data-lucide="file-text" style="width:14px;height:14px;"></i>
+                        Voir documents véhicule
+                    </a>
+                </div>
+            {% empty %}
+                <div class="alert-empty">
+                    <i data-lucide="info" style="width:18px;height:18px;margin-bottom:8px;"></i>
+                    <p>Aucun véhicule ne vous est assigné pour le moment.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

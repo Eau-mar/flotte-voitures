@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification OTP — Fleet Manager</title>
+    <link rel="stylesheet" href="{% static 'web/style.css' %}">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+
+<body>
+
+    <div class="auth-shell">
+        <div class="auth-brand">
+            <div class="auth-brand-content">
+                <div class="auth-brand-logo">
+                    <i data-lucide="truck"></i>
+                </div>
+                <h1>Fleet Manager</h1>
+                <p>Vérification sécurisée par code à usage unique.</p>
+            </div>
+        </div>
+
+        <div class="auth-form-side">
+            <div class="auth-box">
+                <div class="auth-box-header" style="text-align:center;">
+                    <div
+                        style="width:64px;height:64px;background:var(--primary-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+                        <i data-lucide="shield-check" style="width:28px;height:28px;color:var(--primary);"></i>
+                    </div>
+                    <h2>Code de vérification</h2>
+                    <p>Saisissez le code OTP à 6 chiffres reçu sur votre téléphone</p>
+                </div>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.code.id_for_label }}" style="text-align:center;display:block;">{{
+                            form.code.label }}</label>
+                        {{ form.code }}
+                        {% if form.code.errors %}
+                        {% for error in form.code.errors %}
+                        <div class="form-error" style="justify-content:center;">
+                            <i data-lucide="alert-triangle" style="width:13px;height:13px;"></i>
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100"
+                        style="justify-content:center;padding:12px;margin-top:8px;">
+                        <i data-lucide="check-circle"></i>
+                        Vérifier le code
+                    </button>
+                </form>
+
+                <div style="text-align:center;margin-top:24px;font-size:13px;color:var(--text-muted);">
+                    <i data-lucide="info" style="width:14px;height:14px;vertical-align:middle;"></i>
+                    Le code expire dans 10 minutes
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        // Style OTP input
+        const otpInput = document.getElementById('{{ form.code.id_for_label }}');
+        if (otpInput) { otpInput.style.textAlign = 'center'; otpInput.style.fontSize = '20px'; otpInput.style.fontWeight = '700'; otpInput.style.letterSpacing = '8px'; }
+    </script>
+</body>
+
+</html>

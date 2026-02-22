@@ -1,0 +1,121 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Véhicules{% endblock %}
+{% block page_title %}Gestion des véhicules{% endblock %}
+{% block nav_vehicules %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="page-header-info">
+        <h1>Flotte de véhicules</h1>
+        <p>{{ vehicules|length }} véhicule{{ vehicules|length|pluralize }} enregistré{{ vehicules|length|pluralize }}
+        </p>
+    </div>
+    <a href="{% url 'vehicule_create' %}" class="btn btn-success">
+        <i data-lucide="plus"></i>
+        Ajouter un véhicule
+    </a>
+</div>
+
+{% if vehicules %}
+
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Immatriculation</th>
+                <th>Véhicule</th>
+                <th>Année</th>
+                <th>Kilométrage</th>
+                <th>Statut</th>
+                <th>Chauffeur</th>
+                <th style="text-align:center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vehicule in vehicules %}
+            <tr>
+                <td>
+                    <span
+                        style="font-weight:700;font-size:13px;font-family:monospace;background:#f1f5f9;padding:3px 8px;border-radius:4px;">
+                        {{ vehicule.immatriculation }}
+                    </span>
+                </td>
+                <td>
+                    <div style="font-weight:600;">{{ vehicule.marque }} {{ vehicule.modele }}</div>
+                </td>
+                <td style="color:var(--text-muted);">{{ vehicule.annee }}</td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <i data-lucide="gauge" style="width:14px;height:14px;color:var(--text-muted);"></i>
+                        {{ vehicule.kilometrage|floatformat:0 }} km
+                    </div>
+                </td>
+                <td>
+                    {% if vehicule.statut == "DISPONIBLE" %}
+                    <span class="badge badge-success">
+                        <span class="badge-dot"></span> Disponible
+                    </span>
+                    {% elif vehicule.statut == "MAINTENANCE" %}
+                    <span class="badge badge-warning">
+                        <span class="badge-dot"></span> Maintenance
+                    </span>
+                    {% else %}
+                    <span class="badge badge-info">
+                        <span class="badge-dot"></span> En mission
+                    </span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if vehicule.chauffeur %}
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div
+                            style="width:28px;height:28px;background:var(--primary-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--primary);">
+                            {{ vehicule.chauffeur.nom|slice:":1"|upper }}
+                        </div>
+                        <span style="font-size:13px;">{{ vehicule.chauffeur.nom }}</span>
+                    </div>
+                    {% else %}
+                    <span style="color:var(--text-muted);font-size:13px;font-style:italic;">Non assigné</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
+                        <a href="{% url 'document_list' vehicule.id %}" class="btn btn-sm btn-outline" title="Documents">
+                            <i data-lucide="file-text"></i>
+                        </a>
+                        <a href="{% url 'entretien_list' vehicule.id %}" class="btn btn-sm btn-outline" title="Entretiens" style="color:#7c3aed;border-color:#ede9fe;">
+                            <i data-lucide="wrench"></i>
+                        </a>
+                        <a href="{% url 'vehicule_update' vehicule.id %}" class="btn btn-sm btn-outline" title="Modifier" style="color:var(--primary);border-color:var(--primary-light);">
+                            <i data-lucide="edit-3"></i>
+                        </a>
+                        <a href="{% url 'vehicule_delete' vehicule.id %}" class="btn btn-sm btn-outline" title="Supprimer" style="color:var(--danger);border-color:#fee2e2;">
+                            <i data-lucide="trash-2"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+
+<div class="empty-state">
+    <div class="empty-state-icon">
+        <i data-lucide="car"></i>
+    </div>
+    <h3>Aucun véhicule enregistré</h3>
+    <p>Commencez par ajouter votre premier véhicule à la flotte.</p>
+    <a href="{% url 'vehicule_create' %}" class="btn btn-success">
+        <i data-lucide="plus"></i>
+        Ajouter un véhicule
+    </a>
+</div>
+
+{% endif %}
+
+{% endblock %}

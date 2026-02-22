@@ -1,0 +1,107 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Modifier le véhicule{% endblock %}
+{% block page_title %}Modifier le véhicule{% endblock %}
+{% block nav_vehicules %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="page-header-info">
+        <h1>Modification : {{ vehicule.immatriculation }}</h1>
+        <p>Mettez à jour les informations du véhicule</p>
+    </div>
+    <a href="{% url 'vehicule_list' %}" class="btn btn-outline">
+        <i data-lucide="arrow-left"></i>
+        Retour à la liste
+    </a>
+</div>
+
+<div style="max-width:640px;">
+    <div class="card">
+        <div class="card-header">
+            <h2 style="display:flex;align-items:center;gap:8px;">
+                <i data-lucide="car" style="width:18px;height:18px;color:var(--primary);"></i>
+                Informations du véhicule
+            </h2>
+        </div>
+        <div class="card-body">
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                <i data-lucide="alert-circle"></i>
+                <div>{{ form.non_field_errors }}</div>
+            </div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="{{ form.marque.id_for_label }}">Marque</label>
+                        {{ form.marque }}
+                        {% if form.marque.errors %}<div class="form-error"><i data-lucide="alert-triangle" style="width:13px;height:13px;"></i> {{ form.marque.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.modele.id_for_label }}">Modèle</label>
+                        {{ form.modele }}
+                        {% if form.modele.errors %}<div class="form-error"><i data-lucide="alert-triangle" style="width:13px;height:13px;"></i> {{ form.modele.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.immatriculation.id_for_label }}">
+                        <i data-lucide="credit-card" style="width:13px;height:13px;vertical-align:middle;"></i>
+                        Immatriculation
+                    </label>
+                    {{ form.immatriculation }}
+                    {% if form.immatriculation.errors %}<div class="form-error"><i data-lucide="alert-triangle" style="width:13px;height:13px;"></i> {{ form.immatriculation.errors.0 }}</div>{% endif %}
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="{{ form.annee.id_for_label }}">Année</label>
+                        {{ form.annee }}
+                        {% if form.annee.errors %}<div class="form-error"><i data-lucide="alert-triangle" style="width:13px;height:13px;"></i> {{ form.annee.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.kilometrage.id_for_label }}">
+                            <i data-lucide="gauge" style="width:13px;height:13px;vertical-align:middle;"></i>
+                            Kilométrage
+                        </label>
+                        {{ form.kilometrage }}
+                        {% if form.kilometrage.errors %}<div class="form-error"><i data-lucide="alert-triangle" style="width:13px;height:13px;"></i> {{ form.kilometrage.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.statut.id_for_label }}">Statut</label>
+                    {{ form.statut }}
+                    {% if form.statut.errors %}<div class="form-error"><i data-lucide="alert-triangle" style="width:13px;height:13px;"></i> {{ form.statut.errors.0 }}</div>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.chauffeur.id_for_label }}">
+                        <i data-lucide="user" style="width:13px;height:13px;vertical-align:middle;"></i>
+                        Chauffeur (optionnel)
+                    </label>
+                    {{ form.chauffeur }}
+                    {% if form.chauffeur.errors %}<div class="form-error"><i data-lucide="alert-triangle" style="width:13px;height:13px;"></i> {{ form.chauffeur.errors.0 }}</div>{% endif %}
+                </div>
+
+                <div class="divider"></div>
+
+                <div style="display:flex;gap:12px;justify-content:flex-end;">
+                    <a href="{% url 'vehicule_list' %}" class="btn btn-outline">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-lucide="save"></i>
+                        Enregistrer les modifications
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

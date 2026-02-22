@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mot de passe oublié — Fleet Manager</title>
+    <link rel="stylesheet" href="{% static 'web/style.css' %}">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+
+<body>
+
+    <div class="auth-shell">
+        <div class="auth-brand">
+            <div class="auth-brand-content">
+                <div class="auth-brand-logo">
+                    <i data-lucide="truck"></i>
+                </div>
+                <h1>Fleet Manager</h1>
+                <p>Récupérez l'accès à votre compte en quelques secondes.</p>
+            </div>
+        </div>
+
+        <div class="auth-form-side">
+            <div class="auth-box">
+                <div class="auth-box-header" style="text-align:center;">
+                    <div
+                        style="width:64px;height:64px;background:var(--warning-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+                        <i data-lucide="key-round" style="width:28px;height:28px;color:var(--warning);"></i>
+                    </div>
+                    <h2>Mot de passe oublié ?</h2>
+                    <p>Entrez votre numéro de téléphone pour recevoir un code OTP de réinitialisation</p>
+                </div>
+
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i data-lucide="alert-circle"></i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.telephone.id_for_label }}">
+                            <i data-lucide="phone"
+                                style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"></i>
+                            {{ form.telephone.label }}
+                        </label>
+                        {{ form.telephone }}
+                        {% if form.telephone.errors %}
+                        {% for error in form.telephone.errors %}
+                        <div class="form-error">
+                            <i data-lucide="alert-triangle" style="width:13px;height:13px;"></i>
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100" style="justify-content:center;padding:12px;">
+                        <i data-lucide="send"></i>
+                        Envoyer le code
+                    </button>
+                </form>
+
+                <div style="text-align:center;margin-top:24px;font-size:14px;color:var(--text-muted);">
+                    <a href="{% url 'login' %}"
+                        style="color:var(--primary);font-weight:600;display:inline-flex;align-items:center;gap:6px;">
+                        <i data-lucide="arrow-left" style="width:14px;height:14px;"></i>
+                        Retour à la connexion
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

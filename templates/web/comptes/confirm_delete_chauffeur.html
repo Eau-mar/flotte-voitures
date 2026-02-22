@@ -1,0 +1,36 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Supprimer Chauffeur{% endblock %}
+{% block page_title %}Supprimer Chauffeur{% endblock %}
+
+{% block content %}
+
+<div style="max-width:500px;margin: 40px auto;">
+    <div class="card">
+        <div class="card-header" style="background:#fee2e2;color:#991b1b;">
+            <h2 style="display:flex;align-items:center;gap:8px;">
+                <i data-lucide="user-minus" style="width:20px;height:20px;"></i>
+                Supprimer chauffeur
+            </h2>
+        </div>
+        <div class="card-body" style="text-align:center;padding:32px;">
+            <p style="font-size:16px;margin-bottom:24px;">
+                Voulez-vous vraiment supprimer le chauffeur <strong>{{ chauffeur.nom }}</strong> ?
+                <br><br>
+                <small style="color:var(--text-muted);">Son profil sera effacé. Son compte utilisateur restera actif mais sans accès chauffeur.</small>
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div style="display:flex;gap:12px;justify-content:center;">
+                    <a href="{% url 'chauffeur_list' %}" class="btn btn-outline">Annuler</a>
+                    <button type="submit" class="btn btn-danger">
+                        Supprimer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

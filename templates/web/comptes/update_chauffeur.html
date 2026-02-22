@@ -1,0 +1,77 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Modifier Chauffeur{% endblock %}
+{% block page_title %}Modifier Chauffeur{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="page-header-info">
+        <h1>Modification : {{ chauffeur.nom }}</h1>
+        <p>Mettez à jour les informations du chauffeur</p>
+    </div>
+    <a href="{% url 'chauffeur_list' %}" class="btn btn-outline">
+        <i data-lucide="arrow-left"></i>
+        Retour
+    </a>
+</div>
+
+<div style="max-width:640px;">
+    <div class="card">
+        <div class="card-header">
+            <h2 style="display:flex;align-items:center;gap:8px;">
+                <i data-lucide="user" style="width:18px;height:18px;color:var(--primary);"></i>
+                Profil Chauffeur
+            </h2>
+        </div>
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="{{ form.nom.id_for_label }}">Nom complet</label>
+                        {{ form.nom }}
+                        {% if form.nom.errors %}<div class="form-error">{{ form.nom.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.telephone.id_for_label }}">Téléphone</label>
+                        {{ form.telephone }}
+                        {% if form.telephone.errors %}<div class="form-error">{{ form.telephone.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="{{ form.numero_permis.id_for_label }}">Numéro Permis</label>
+                        {{ form.numero_permis }}
+                        {% if form.numero_permis.errors %}<div class="form-error">{{ form.numero_permis.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.date_expiration_permis.id_for_label }}">Expiration Permis</label>
+                        {{ form.date_expiration_permis }}
+                        {% if form.date_expiration_permis.errors %}<div class="form-error">{{ form.date_expiration_permis.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.statut.id_for_label }}">Statut</label>
+                    {{ form.statut }}
+                    {% if form.statut.errors %}<div class="form-error">{{ form.statut.errors.0 }}</div>{% endif %}
+                </div>
+
+                <div class="divider"></div>
+
+                <div style="display:flex;gap:12px;justify-content:flex-end;">
+                    <a href="{% url 'chauffeur_list' %}" class="btn btn-outline">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-lucide="save"></i>
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

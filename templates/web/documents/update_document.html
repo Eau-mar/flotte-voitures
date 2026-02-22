@@ -1,0 +1,77 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Modifier Document{% endblock %}
+{% block page_title %}Modifier Document{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="page-header-info">
+        <h1>Modification : {{ document.get_type_document_display }}</h1>
+        <p>Véhicule : {{ document.vehicule.immatriculation }}</p>
+    </div>
+    <a href="{% url 'document_list' document.vehicule.id %}" class="btn btn-outline">
+        <i data-lucide="arrow-left"></i>
+        Retour
+    </a>
+</div>
+
+<div style="max-width:640px;">
+    <div class="card">
+        <div class="card-header">
+            <h2 style="display:flex;align-items:center;gap:8px;">
+                <i data-lucide="file-text" style="width:18px;height:18px;color:var(--primary);"></i>
+                Détails du document
+            </h2>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.vehicule.id_for_label }}">Véhicule</label>
+                    {{ form.vehicule }}
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="{{ form.type_document.id_for_label }}">Type de document</label>
+                        {{ form.type_document }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.numero_document.id_for_label }}">Numéro du document</label>
+                        {{ form.numero_document }}
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="{{ form.date_emission.id_for_label }}">Date d'émission</label>
+                        {{ form.date_emission }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.date_expiration.id_for_label }}">Date d'expiration</label>
+                        {{ form.date_expiration }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.fichier.id_for_label }}">Fichier (laisser vide pour conserver l'ancien)</label>
+                    {{ form.fichier }}
+                </div>
+
+                <div class="divider"></div>
+
+                <div style="display:flex;gap:12px;justify-content:flex-end;">
+                    <a href="{% url 'document_list' document.vehicule.id %}" class="btn btn-outline">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-lucide="save"></i>
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

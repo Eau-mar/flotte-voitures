@@ -1,0 +1,72 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Modifier Entretien{% endblock %}
+{% block page_title %}Modifier Entretien{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="page-header-info">
+        <h1>Modification : Entretien</h1>
+        <p>Véhicule : {{ entretien.vehicule.immatriculation }}</p>
+    </div>
+    <a href="{% url 'entretien_list' entretien.vehicule.id %}" class="btn btn-outline">
+        <i data-lucide="arrow-left"></i>
+        Retour
+    </a>
+</div>
+
+<div style="max-width:640px;">
+    <div class="card">
+        <div class="card-header">
+            <h2 style="display:flex;align-items:center;gap:8px;">
+                <i data-lucide="wrench" style="width:18px;height:18px;color:var(--primary);"></i>
+                Détails de l'entretien
+            </h2>
+        </div>
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.vehicule.id_for_label }}">Véhicule</label>
+                    {{ form.vehicule }}
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="{{ form.type_entretien.id_for_label }}">Type d'entretien</label>
+                        {{ form.type_entretien }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.date_prevue.id_for_label }}">Date prévue</label>
+                        {{ form.date_prevue }}
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="{{ form.cout.id_for_label }}">Coût (CFA)</label>
+                        {{ form.cout }}
+                    </div>
+                    <div class="form-group" style="display:flex;align-items:center;gap:8px;padding-top:32px;">
+                        {{ form.effectue }}
+                        <label for="{{ form.effectue.id_for_label }}" style="margin-bottom:0;">Effectué</label>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div style="display:flex;gap:12px;justify-content:flex-end;">
+                    <a href="{% url 'entretien_list' entretien.vehicule.id %}" class="btn btn-outline">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-lucide="save"></i>
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

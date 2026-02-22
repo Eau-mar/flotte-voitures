@@ -1,0 +1,84 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Chauffeurs{% endblock %}
+{% block page_title %}Gestion des chauffeurs{% endblock %}
+{% block nav_chauffeurs %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="page-header-info">
+        <h1>Liste des chauffeurs</h1>
+        <p>{{ chauffeurs|length }} chauffeur{{ chauffeurs|length|pluralize }} enregistré{{ chauffeurs|length|pluralize }}</p>
+    </div>
+    <a href="{% url 'register' %}" class="btn btn-success">
+        <i data-lucide="user-plus"></i>
+        Nouveau chauffeur
+    </a>
+</div>
+
+{% if chauffeurs %}
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Téléphone</th>
+                <th>N° Permis</th>
+                <th>Expiration Permis</th>
+                <th>Statut</th>
+                <th style="text-align:center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in chauffeurs %}
+            <tr>
+                <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div class="avatar" style="width:32px;height:32px;background:var(--primary-light);color:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">
+                            {{ c.nom|slice:":1"|upper }}
+                        </div>
+                        <div style="font-weight:600;">{{ c.nom }}</div>
+                    </div>
+                </td>
+                <td>{{ c.telephone }}</td>
+                <td><code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;">{{ c.numero_permis }}</code></td>
+                <td>
+                    <span style="color: {% if c.date_expiration_permis < today %}var(--danger){% else %}inherit{% endif %};">
+                        {{ c.date_expiration_permis }}
+                    </span>
+                </td>
+                <td>
+                    {% if c.statut == "DISPONIBLE" %}
+                    <span class="badge badge-success">Disponible</span>
+                    {% elif c.statut == "MISSION" %}
+                    <span class="badge badge-info">En mission</span>
+                    {% else %}
+                    <span class="badge badge-warning">Hors service</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
+                        <a href="{% url 'chauffeur_update' c.id %}" class="btn btn-sm btn-outline" title="Modifier">
+                            <i data-lucide="edit-3"></i>
+                        </a>
+                        <a href="{% url 'chauffeur_delete' c.id %}" class="btn btn-sm btn-outline" title="Supprimer" style="color:var(--danger);border-color:#fee2e2;">
+                            <i data-lucide="trash-2"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon"><i data-lucide="users"></i></div>
+    <h3>Aucun chauffeur</h3>
+    <p>Vous n'avez pas encore de chauffeurs enregistrés.</p>
+    <a href="{% url 'register' %}" class="btn btn-success">Enregistrer un chauffeur</a>
+</div>
+{% endif %}
+
+{% endblock %}

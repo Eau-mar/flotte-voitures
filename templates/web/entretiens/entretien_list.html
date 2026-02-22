@@ -1,0 +1,120 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Entretiens — {{ vehicule.marque }} {{ vehicule.modele }}{% endblock %}
+{% block page_title %}Entretiens du véhicule{% endblock %}
+{% block nav_entretiens %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="page-header-info">
+        <h1>Entretiens & Maintenance</h1>
+        <p style="display:flex;align-items:center;gap:6px;">
+            <i data-lucide="car" style="width:14px;height:14px;"></i>
+            <span style="font-family:monospace;font-weight:700;">{{ vehicule.immatriculation }}</span>
+            — {{ vehicule.marque }} {{ vehicule.modele }}
+        </p>
+    </div>
+    <div style="display:flex;gap:10px;">
+        <a href="{% url 'vehicule_list' %}" class="btn btn-outline">
+            <i data-lucide="arrow-left"></i>
+            Retour
+        </a>
+        <a href="{% url 'entretien_create' %}" class="btn btn-success">
+            <i data-lucide="plus"></i>
+            Ajouter un entretien
+        </a>
+    </div>
+</div>
+
+{% if entretiens %}
+
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Type d'entretien</th>
+                <th>Date prévue</th>
+                <th>Coût estimé</th>
+                <th>Statut</th>
+                <th style="text-align:center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entretien in entretiens %}
+            <tr>
+                <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div
+                            style="width:34px;height:34px;background:#ede9fe;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            {% if entretien.type_entretien == "vidange" %}
+                            <i data-lucide="droplets" style="width:15px;height:15px;color:#7c3aed;"></i>
+                            {% elif entretien.type_entretien == "reparation" %}
+                            <i data-lucide="hammer" style="width:15px;height:15px;color:#7c3aed;"></i>
+                            {% else %}
+                            <i data-lucide="settings" style="width:15px;height:15px;color:#7c3aed;"></i>
+                            {% endif %}
+                        </div>
+                        <span style="font-weight:600;">{{ entretien.get_type_entretien_display }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <i data-lucide="calendar" style="width:14px;height:14px;color:var(--text-muted);"></i>
+                        {{ entretien.date_prevue }}
+                    </div>
+                </td>
+                <td>
+                    <span style="font-weight:600;">{{ entretien.cout }} CFA</span>
+                </td>
+                <td>
+                    {% if entretien.effectue %}
+                    <span class="badge badge-success">
+                        <i data-lucide="check-circle" style="width:11px;height:11px;"></i>
+                        Effectué
+                    </span>
+                    {% elif entretien.date_prevue < today %} 
+                    <span class="badge badge-danger">
+                        <i data-lucide="alert-circle" style="width:11px;height:11px;"></i>
+                        En retard
+                    </span>
+                    {% else %}
+                    <span class="badge badge-warning">
+                        <i data-lucide="clock" style="width:11px;height:11px;"></i>
+                        Planifié
+                    </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
+                        <a href="{% url 'entretien_update' entretien.id %}" class="btn btn-sm btn-outline" title="Modifier">
+                            <i data-lucide="edit-3"></i>
+                        </a>
+                        <a href="{% url 'entretien_delete' entretien.id %}" class="btn btn-sm btn-outline" title="Supprimer" style="color:var(--danger);border-color:#fee2e2;">
+                            <i data-lucide="trash-2"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+
+<div class="empty-state">
+    <div class="empty-state-icon" style="background:#ede9fe;color:#7c3aed;">
+        <i data-lucide="wrench"></i>
+    </div>
+    <h3>Aucun entretien enregistré</h3>
+    <p>Planifiez la maintenance de ce véhicule pour garantir sa fiabilité et éviter les pannes.</p>
+    <a href="{% url 'entretien_create' %}" class="btn btn-success">
+        <i data-lucide="plus"></i>
+        Ajouter un entretien
+    </a>
+</div>
+
+{% endif %}
+
+{% endblock %}

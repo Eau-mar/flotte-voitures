@@ -1,0 +1,257 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Tableau de bord{% endblock %}
+{% block page_title %}Tableau de bord{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+
+<!-- KPI Stats Row -->
+<div class="kpi-grid">
+
+    <!-- Véhicules -->
+    <div class="kpi-card">
+        <div class="kpi-icon indigo">
+            <i data-lucide="car"></i>
+        </div>
+        <div class="kpi-body">
+            <div class="kpi-label">Véhicules</div>
+            <div class="kpi-value">{{ total_vehicules }}</div>
+            <div class="kpi-sub">
+                <span><i data-lucide="check-circle" style="width:12px;height:12px;color:var(--success);"></i> {{ vehicules_disponibles }} dispo</span>
+                <span><i data-lucide="navigation" style="width:12px;height:12px;color:var(--warning);"></i> {{ vehicules_mission }} mission</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chauffeurs -->
+    <div class="kpi-card">
+        <div class="kpi-icon green">
+            <i data-lucide="users"></i>
+        </div>
+        <div class="kpi-body">
+            <div class="kpi-label">Chauffeurs</div>
+            <div class="kpi-value">{{ total_chauffeurs }}</div>
+            <div class="kpi-sub">
+                <span><i data-lucide="check-circle" style="width:12px;height:12px;color:var(--success);"></i> {{ chauffeurs_disponibles }} dispo</span>
+                <span><i data-lucide="navigation" style="width:12px;height:12px;color:var(--warning);"></i> {{ chauffeurs_mission }} mission</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Docs expirés -->
+    <div class="kpi-card">
+        <div class="kpi-icon red">
+            <i data-lucide="file-x"></i>
+        </div>
+        <div class="kpi-body">
+            <div class="kpi-label">Docs expirés</div>
+            <div class="kpi-value">{{ documents_expires_count }}</div>
+            <div class="kpi-sub">
+                <span style="color:var(--danger);">Action requise</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Docs bientôt -->
+    <div class="kpi-card">
+        <div class="kpi-icon amber">
+            <i data-lucide="clock-alert"></i>
+        </div>
+        <div class="kpi-body">
+            <div class="kpi-label">Expire ≤ 30j</div>
+            <div class="kpi-value">{{ documents_bientot_count }}</div>
+            <div class="kpi-sub">
+                <span style="color:var(--warning);">À surveiller</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Maintenance -->
+    <div class="kpi-card">
+        <div class="kpi-icon purple">
+            <i data-lucide="wrench"></i>
+        </div>
+        <div class="kpi-body">
+            <div class="kpi-label">En maintenance</div>
+            <div class="kpi-value">{{ vehicules_maintenance }}</div>
+            <div class="kpi-sub">
+                <span style="color:#7c3aed;">Véhicules</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Alerts + Activity -->
+<div class="grid-2" style="gap:20px;">
+
+    <!-- LEFT — Alerts -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Alertes critiques -->
+        <div class="alert-section danger">
+            <div class="alert-section-header">
+                <i data-lucide="alert-octagon"></i>
+                Alertes critiques
+            </div>
+            <div class="alert-list">
+
+                {% if documents_expires %}
+                {% for doc in documents_expires %}
+                <div class="alert-list-item">
+                    <span>
+                        <i data-lucide="file-x" style="width:14px;height:14px;color:var(--danger);vertical-align:middle;margin-right:4px;"></i>
+                        Document expiré — <strong>{{ doc.vehicule.immatriculation }}</strong>
+                    </span>
+                    <span class="badge badge-danger">{{ doc.get_type_document_display }}</span>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                {% if entretiens_retard %}
+                {% for e in entretiens_retard %}
+                <div class="alert-list-item">
+                    <span>
+                        <i data-lucide="wrench" style="width:14px;height:14px;color:var(--danger);vertical-align:middle;margin-right:4px;"></i>
+                        Entretien en retard — <strong>{{ e.vehicule }}</strong>
+                    </span>
+                    <span class="badge badge-danger">{{ e.get_type_entretien_display }}</span>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                {% if chauffeurs_permis_expire %}
+                {% for c in chauffeurs_permis_expire %}
+                <div class="alert-list-item">
+                    <span>
+                        <i data-lucide="id-card" style="width:14px;height:14px;color:var(--danger);vertical-align:middle;margin-right:4px;"></i>
+                        Permis expiré — <strong>{{ c.nom }}</strong>
+                    </span>
+                    <span class="badge badge-danger">Permis</span>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                {% if not documents_expires and not entretiens_retard and not chauffeurs_permis_expire %}
+                <div class="alert-empty">
+                    <i data-lucide="check-circle" style="width:14px;height:14px;color:var(--success);vertical-align:middle;margin-right:4px;"></i>
+                    Aucune alerte critique
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- À surveiller -->
+        <div class="alert-section warning">
+            <div class="alert-section-header">
+                <i data-lucide="alert-triangle"></i>
+                À surveiller
+            </div>
+            <div class="alert-list">
+
+                {% for doc in documents_bientot %}
+                <div class="alert-list-item">
+                    <span>
+                        <i data-lucide="file-clock" style="width:14px;height:14px;color:var(--warning);vertical-align:middle;margin-right:4px;"></i>
+                        {{ doc.vehicule.immatriculation }} — {{ doc.get_type_document_display }}
+                    </span>
+                    <span class="badge badge-warning">{{ doc.date_expiration }}</span>
+                </div>
+                {% endfor %}
+
+                {% for e in entretiens_bientot %}
+                <div class="alert-list-item">
+                    <span>
+                        <i data-lucide="calendar-clock" style="width:14px;height:14px;color:var(--warning);vertical-align:middle;margin-right:4px;"></i>
+                        {{ e.vehicule }} — {{ e.get_type_entretien_display }}
+                    </span>
+                    <span class="badge badge-warning">{{ e.date_prevue }}</span>
+                </div>
+                {% endfor %}
+
+                {% if not documents_bientot and not entretiens_bientot %}
+                <div class="alert-empty">
+                    <i data-lucide="check-circle" style="width:14px;height:14px;color:var(--success);vertical-align:middle;margin-right:4px;"></i>
+                    Aucune alerte à surveiller
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT — Recent activity -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Derniers véhicules -->
+        <div class="card">
+            <div class="card-header">
+                <h3 style="display:flex;align-items:center;gap:8px;">
+                    <i data-lucide="car" style="width:16px;height:16px;color:var(--primary);"></i>
+                    Derniers véhicules ajoutés
+                </h3>
+                <a href="{% url 'vehicule_list' %}" class="btn btn-ghost btn-sm">
+                    Voir tout
+                    <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
+                </a>
+            </div>
+            <div style="padding:0 20px;">
+                {% for v in derniers_vehicules %}
+                <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <div>
+                        <div style="font-weight:600;font-size:14px;">{{ v.marque }} {{ v.modele }}</div>
+                        <div style="font-size:12px;color:var(--text-muted);">{{ v.immatriculation }}</div>
+                    </div>
+                    <div style="margin-left:auto;">
+                        <span
+                            class="badge {% if v.statut == 'DISPONIBLE' %}badge-success{% elif v.statut == 'MAINTENANCE' %}badge-warning{% else %}badge-info{% endif %}">
+                            {{ v.get_statut_display }}
+                        </span>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="alert-empty">Aucun véhicule enregistré</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Derniers entretiens -->
+        <div class="card">
+            <div class="card-header">
+                <h3 style="display:flex;align-items:center;gap:8px;">
+                    <i data-lucide="wrench" style="width:16px;height:16px;color:var(--primary);"></i>
+                    Derniers entretiens
+                </h3>
+                <a href="{% url 'entretien_create' %}" class="btn btn-ghost btn-sm">
+                    Ajouter
+                    <i data-lucide="plus" style="width:14px;height:14px;"></i>
+                </a>
+            </div>
+            <div style="padding:0 20px;">
+                {% for e in derniers_entretiens %}
+                <div class="activity-item">
+                    <div class="activity-dot" style="background:var(--warning);"></div>
+                    <div>
+                        <div style="font-weight:600;font-size:14px;">{{ e.vehicule }}</div>
+                        <div style="font-size:12px;color:var(--text-muted);">{{ e.get_type_entretien_display }}</div>
+                    </div>
+                    <div style="margin-left:auto;">
+                        {% if e.effectue %}
+                        <span class="badge badge-success">Effectué</span>
+                        {% else %}
+                        <span class="badge badge-warning">Planifié</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="alert-empty">Aucun entretien enregistré</div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

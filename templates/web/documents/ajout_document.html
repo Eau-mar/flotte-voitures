@@ -1,0 +1,77 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Ajouter un document{% endblock %}
+{% block page_title %}Ajouter un document{% endblock %}
+{% block nav_documents %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="page-header-info">
+        <h1>Nouveau document</h1>
+        <p>Ajoutez un document administratif pour un véhicule</p>
+    </div>
+    <a href="{% url 'vehicule_list' %}" class="btn btn-outline">
+        <i data-lucide="arrow-left"></i>
+        Retour aux véhicules
+    </a>
+</div>
+
+<div style="max-width:620px;">
+    <div class="card">
+        <div class="card-header">
+            <h2 style="display:flex;align-items:center;gap:8px;">
+                <i data-lucide="file-plus" style="width:18px;height:18px;color:var(--primary);"></i>
+                Informations du document
+            </h2>
+        </div>
+        <div class="card-body">
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                <i data-lucide="alert-circle"></i>
+                <div>{{ form.non_field_errors }}</div>
+            </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">
+                        {% if field.name == "vehicule" %}<i data-lucide="car"
+                            style="width:13px;height:13px;vertical-align:middle;"></i> {% endif %}
+                        {% if field.name == "date_emission" or field.name == "date_expiration" %}<i data-lucide="calendar" style="width:13px;height:13px;vertical-align:middle;"></i>{% endif %}
+                        {% if field.name == "fichier" %}<i data-lucide="paperclip"
+                            style="width:13px;height:13px;vertical-align:middle;"></i> {% endif %}
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                    {% for error in field.errors %}
+                    <div class="form-error">
+                        <i data-lucide="alert-triangle" style="width:13px;height:13px;"></i>
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% if field.help_text %}<div class="form-hint">{{ field.help_text }}</div>{% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="divider"></div>
+
+                <div style="display:flex;gap:12px;justify-content:flex-end;">
+                    <a href="{% url 'vehicule_list' %}" class="btn btn-outline">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-lucide="save"></i>
+                        Enregistrer le document
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

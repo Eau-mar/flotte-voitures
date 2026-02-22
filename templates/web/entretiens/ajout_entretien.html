@@ -1,0 +1,72 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Ajouter un entretien{% endblock %}
+{% block page_title %}Ajouter un entretien{% endblock %}
+{% block nav_entretiens %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="page-header-info">
+        <h1>Nouvel entretien</h1>
+        <p>Planifiez une opération de maintenance pour un véhicule</p>
+    </div>
+    <a href="{% url 'vehicule_list' %}" class="btn btn-outline">
+        <i data-lucide="arrow-left"></i>
+        Retour aux véhicules
+    </a>
+</div>
+
+<div style="max-width:600px;">
+    <div class="card">
+        <div class="card-header">
+            <h2 style="display:flex;align-items:center;gap:8px;">
+                <i data-lucide="wrench" style="width:18px;height:18px;color:var(--primary);"></i>
+                Détails de l'entretien
+            </h2>
+        </div>
+        <div class="card-body">
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                <i data-lucide="alert-circle"></i>
+                <div>{{ form.non_field_errors }}</div>
+            </div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    {% for error in field.errors %}
+                    <div class="form-error">
+                        <i data-lucide="alert-triangle" style="width:13px;height:13px;"></i>
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% if field.help_text %}
+                    <div class="form-hint">{{ field.help_text }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="divider"></div>
+
+                <div style="display:flex;gap:12px;justify-content:flex-end;">
+                    <a href="{% url 'vehicule_list' %}" class="btn btn-outline">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-lucide="save"></i>
+                        Enregistrer l'entretien
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

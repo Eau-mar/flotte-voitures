@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription — Fleet Manager</title>
+    <link rel="stylesheet" href="{% static 'web/style.css' %}">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+
+<body>
+
+    <div class="auth-shell">
+
+        <!-- Left brand panel -->
+        <div class="auth-brand">
+            <div class="auth-brand-content">
+                <div class="auth-brand-logo">
+                    <i data-lucide="truck"></i>
+                </div>
+                <h1>Rejoignez Fleet Manager</h1>
+                <p>Créez votre compte et commencez à gérer votre flotte dès aujourd'hui.</p>
+
+                <div class="auth-brand-features">
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon">
+                            <i data-lucide="users"></i>
+                        </div>
+                        Gestion multi-rôles (Gestionnaire / Chauffeur)
+                    </div>
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon">
+                            <i data-lucide="bell"></i>
+                        </div>
+                        Alertes automatiques d'expiration
+                    </div>
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon">
+                            <i data-lucide="clock"></i>
+                        </div>
+                        Suivi en temps réel
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right form side -->
+        <div class="auth-form-side" style="padding: 32px 40px; overflow-y: auto;">
+            <div class="auth-box" style="max-width:480px;">
+
+                <div class="auth-box-header">
+                    <h2>Créer un compte</h2>
+                    <p>Remplissez les informations ci-dessous pour vous inscrire</p>
+                </div>
+
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <i data-lucide="alert-circle"></i>
+                    <div>{{ form.non_field_errors }}</div>
+                </div>
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                    <div class="form-group" {% if field.name == "numero_permis" or field.name == "date_expiration_permis" %}id="chauffeur_fields"{% endif %}>
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        {% for error in field.errors %}
+                        <div class="form-error">
+                            <i data-lucide="alert-triangle" style="width:13px;height:13px;"></i>
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        {% if field.help_text %}
+                        <div class="form-hint">{{ field.help_text }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-primary w-100"
+                        style="justify-content:center;padding:12px;margin-top:8px;">
+                        <i data-lucide="user-plus"></i>
+                        Créer mon compte
+                    </button>
+
+                </form>
+
+                <div style="text-align:center;margin-top:24px;font-size:14px;color:var(--text-muted);">
+                    Déjà un compte ?
+                    <a href="{% url 'login' %}" style="color:var(--primary);font-weight:600;">Se connecter</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const roleField = document.querySelector("#id_role");
+            const chauffeurFields = document.querySelectorAll("#chauffeur_fields");
+
+            function toggleFields() {
+                chauffeurFields.forEach(div => {
+                    div.style.display = roleField.value === "driver" ? "block" : "none";
+                });
+            }
+
+            if (roleField) {
+                roleField.addEventListener("change", toggleFields);
+                toggleFields();
+            }
+        });
+    </script>
+</body>
+
+</html>

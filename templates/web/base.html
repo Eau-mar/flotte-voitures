@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titre %}Fleet Manager{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'web/style.css' %}">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+{% if user.is_authenticated %}
+<div class="app-shell">
+
+    <!-- ═══════════════ SIDEBAR ═══════════════ -->
+    <aside class="sidebar" id="sidebar">
+
+        <!-- Logo -->
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-icon">
+                <i data-lucide="truck" style="width:20px;height:20px;color:white;"></i>
+            </div>
+            <div>
+                <div class="sidebar-logo-text">Fleet Manager</div>
+                <div class="sidebar-logo-sub">Gestion de flotte</div>
+            </div>
+        </div>
+
+        <!-- Nav links -->
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Menu principal</div>
+
+            <a href="{% url 'dashboard' %}" class="nav-item {% block nav_dashboard %}{% endblock %}">
+                <i data-lucide="layout-dashboard"></i>
+                Tableau de bord
+            </a>
+
+            {% if user.role == "manager" %}
+            <a href="{% url 'vehicule_list' %}" class="nav-item {% block nav_vehicules %}{% endblock %}">
+                <i data-lucide="car"></i>
+                Véhicules
+            </a>
+
+            <a href="{% url 'chauffeur_list' %}" class="nav-item {% block nav_chauffeurs %}{% endblock %}">
+                <i data-lucide="users"></i>
+                Chauffeurs
+            </a>
+            {% endif %}
+
+            {% if user.role == "manager" %}
+            <div class="nav-section-label">Gestion</div>
+
+            <a href="{% url 'document_create' %}" class="nav-item {% block nav_documents %}{% endblock %}">
+                <i data-lucide="file-text"></i>
+                Documents
+            </a>
+
+            <a href="{% url 'entretien_create' %}" class="nav-item {% block nav_entretiens %}{% endblock %}">
+                <i data-lucide="wrench"></i>
+                Entretiens
+            </a>
+            {% endif %}
+        </nav>
+
+        <!-- Footer / user -->
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar">
+                    {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+                </div>
+                <div>
+                    <div class="sidebar-user-name">{{ user.first_name }} {{ user.last_name }}</div>
+                    <div class="sidebar-user-role">{{ user.get_role_display }}</div>
+                </div>
+            </div>
+            <a href="{% url 'logout' %}" class="sidebar-logout">
+                <i data-lucide="log-out" style="width:16px;height:16px;"></i>
+                Déconnexion
+            </a>
+        </div>
+    </aside>
+
+    <!-- ═══════════════ MAIN ═══════════════ -->
+    <div class="main-wrap">
+
+        <!-- Top bar -->
+        <header class="topbar">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <button class="sidebar-toggle btn-ghost btn-icon" id="sidebarToggle" aria-label="Menu">
+                    <i data-lucide="menu" style="width:22px;height:22px;"></i>
+                </button>
+                <span class="topbar-title">{% block page_title %}Fleet Manager{% endblock %}</span>
+            </div>
+            <div class="topbar-right">
+                {% if messages %}
+                    <span style="font-size:13px;color:var(--text-muted);">
+                        <i data-lucide="bell-dot" style="width:18px;height:18px;vertical-align:middle;color:var(--warning);"></i>
+                    </span>
+                {% endif %}
+                <div style="font-size:13px;color:var(--text-muted);">
+                    Bonjour, <strong>{{ user.first_name }}</strong>
+                </div>
+            </div>
+        </header>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="msg-zone" style="padding:0 28px;margin-top:16px;">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Page Content -->
+        <main class="page-content">
+            {% block content %}{% endblock %}
+        </main>
+
+    </div><!-- /main-wrap -->
+</div><!-- /app-shell -->
+
+{% else %}
+<!-- Non-authenticated: render content directly without sidebar -->
+{% if messages %}
+<div style="padding:16px;">
+    {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endif %}
+
+<!-- Init Lucide icons -->
+<script>
+    lucide.createIcons();
+
+    // Sidebar mobile toggle
+    const toggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    if (toggle && sidebar) {
+        toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    }
+</script>
+
+{% block js %}{% endblock %}
+</body>
+</html>

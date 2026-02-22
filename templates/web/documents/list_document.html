@@ -1,0 +1,116 @@
+{% extends "web/base.html" %}
+
+{% block titre %}Documents — {{ vehicule }}{% endblock %}
+{% block page_title %}Documents du véhicule{% endblock %}
+{% block nav_documents %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="page-header-info">
+        <h1>Documents du véhicule</h1>
+        <p style="display:flex;align-items:center;gap:6px;">
+            <i data-lucide="car" style="width:14px;height:14px;"></i>
+            <span style="font-family:monospace;font-weight:700;">{{ vehicule.immatriculation }}</span>
+            — {{ vehicule.marque }} {{ vehicule.modele }}
+        </p>
+    </div>
+    <div style="display:flex;gap:10px;">
+        <a href="{% url 'vehicule_list' %}" class="btn btn-outline">
+            <i data-lucide="arrow-left"></i>
+            Retour
+        </a>
+        <a href="{% url 'document_create' %}" class="btn btn-primary">
+            <i data-lucide="plus"></i>
+            Ajouter un document
+        </a>
+    </div>
+</div>
+
+{% if documents %}
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Type de document</th>
+                <th>Numéro</th>
+                <th>Date d'émission</th>
+                <th>Date d'expiration</th>
+                <th>Statut</th>
+                <th>Fichier</th>
+                <th style="text-align:center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in documents %}
+            <tr>
+                <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div
+                            style="width:32px;height:32px;background:var(--info-light);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i data-lucide="file-text" style="width:15px;height:15px;color:var(--info);"></i>
+                        </div>
+                        <span style="font-weight:600;">{{ doc.get_type_document_display }}</span>
+                    </div>
+                </td>
+                <td>
+                    <span
+                        style="font-family:monospace;background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:13px;">
+                        {{ doc.numero_document }}
+                    </span>
+                </td>
+                <td style="color:var(--text-muted);">{{ doc.date_emission }}</td>
+                <td>
+                    <span style="font-weight:600;">{{ doc.date_expiration }}</span>
+                </td>
+                <td>
+                    {% if doc.est_expire %}
+                    <span class="badge badge-danger">
+                        <i data-lucide="x-circle" style="width:11px;height:11px;"></i>
+                        Expiré
+                    </span>
+                    {% elif doc.expire_bientot %}
+                    <span class="badge badge-warning">
+                        <i data-lucide="clock" style="width:11px;height:11px;"></i>
+                        Expire bientôt
+                    </span>
+                    {% else %}
+                    <span class="badge badge-success">
+                        <i data-lucide="check-circle" style="width:11px;height:11px;"></i>
+                        Valide
+                    </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
+                        <a href="{% url 'document_update' doc.id %}" class="btn btn-sm btn-outline" title="Modifier">
+                            <i data-lucide="edit-3"></i>
+                        </a>
+                        <a href="{% url 'document_delete' doc.id %}" class="btn btn-sm btn-outline" title="Supprimer" style="color:var(--danger);border-color:#fee2e2;">
+                            <i data-lucide="trash-2"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+
+<div class="empty-state">
+    <div class="empty-state-icon" style="background:var(--info-light);color:var(--info);">
+        <i data-lucide="file-text"></i>
+    </div>
+    <h3>Aucun document enregistré</h3>
+    <p>Ajoutez les documents administratifs de ce véhicule (assurance, carte grise, visite technique…)</p>
+    <a href="{% url 'document_create' %}" class="btn btn-primary">
+        <i data-lucide="plus"></i>
+        Ajouter un document
+    </a>
+</div>
+
+{% endif %}
+
+{% endblock %}

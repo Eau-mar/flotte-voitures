@@ -1,0 +1,195 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue — Fleet Manager</title>
+    <link rel="stylesheet" href="{% static 'web/style.css' %}">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #312e81 100%);
+            min-height: 100vh;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .8);
+            margin-bottom: 28px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 800;
+            color: white;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: rgba(255, 255, 255, .65);
+            max-width: 500px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero-primary {
+            background: white;
+            color: #1e1b4b;
+            font-weight: 700;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all .15s;
+            text-decoration: none;
+        }
+
+        .btn-hero-primary:hover {
+            background: #e0e7ff;
+            color: #1e1b4b;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+            text-decoration: none;
+        }
+
+        .btn-hero-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, .25);
+            font-weight: 600;
+            padding: 12px 26px;
+            border-radius: 12px;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all .15s;
+            text-decoration: none;
+        }
+
+        .btn-hero-outline:hover {
+            background: rgba(255, 255, 255, .1);
+            border-color: rgba(255, 255, 255, .5);
+            text-decoration: none;
+        }
+
+        .features {
+            margin-top: 72px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .feature-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 12px;
+            padding: 14px 20px;
+            color: rgba(255, 255, 255, .85);
+            font-size: 14px;
+        }
+
+        .feature-chip svg {
+            color: #a5b4fc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="hero">
+
+        <div class="hero-badge">
+            <i data-lucide="zap" style="width:14px;height:14px;color:#fbbf24;"></i>
+            Système de gestion de flotte professionnelle
+        </div>
+
+        <h1>Gérez votre flotte<br>avec <span>Fleet Manager</span></h1>
+
+        <p>Une plateforme complète pour suivre vos véhicules, gérer vos chauffeurs, et anticiper la maintenance. Simple,
+            puissant, fiable.</p>
+
+        <div class="hero-actions">
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn-hero-primary">
+                <i data-lucide="layout-dashboard"></i>
+                Accéder au tableau de bord
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}" class="btn-hero-primary">
+                <i data-lucide="log-in"></i>
+                Se connecter
+            </a>
+            <a href="{% url 'register' %}" class="btn-hero-outline">
+                <i data-lucide="user-plus"></i>
+                Créer un compte
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="features">
+            <div class="feature-chip">
+                <i data-lucide="car" style="width:18px;height:18px;"></i>
+                Suivi des véhicules
+            </div>
+            <div class="feature-chip">
+                <i data-lucide="file-text" style="width:18px;height:18px;"></i>
+                Gestion des documents
+            </div>
+            <div class="feature-chip">
+                <i data-lucide="wrench" style="width:18px;height:18px;"></i>
+                Planification maintenance
+            </div>
+            <div class="feature-chip">
+                <i data-lucide="bell" style="width:18px;height:18px;"></i>
+                Alertes automatiques
+            </div>
+        </div>
+
+    </div>
+
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>
